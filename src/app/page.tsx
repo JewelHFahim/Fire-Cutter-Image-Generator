@@ -38,6 +38,7 @@ export default function GeneratorPage() {
 
   const [activeCanvas, setActiveCanvas] = useState<HTMLCanvasElement | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [formResetKey, setFormResetKey] = useState(0);
 
   const handleMeasurementsChange = useCallback((newMeasurements: ProductMeasurements) => {
     setMeasurements(newMeasurements);
@@ -94,6 +95,7 @@ export default function GeneratorPage() {
     });
     setImages([]);
     setMeasurements(DEFAULT_PANTS_MEASUREMENTS);
+    setFormResetKey((prev) => prev + 1);
     setLayoutMode('auto');
     setImageFit('contain');
     setPreset('1440x1440');
@@ -131,7 +133,8 @@ export default function GeneratorPage() {
 
             {/* Measurement Input Form */}
             <MeasurementForm
-              initialValues={measurements}
+              initialValues={DEFAULT_PANTS_MEASUREMENTS}
+              resetKey={formResetKey}
               onChange={handleMeasurementsChange}
             />
           </section>

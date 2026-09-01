@@ -13,11 +13,14 @@ import { Sliders, RotateCcw } from 'lucide-react';
 
 interface MeasurementFormProps {
   initialValues?: ProductMeasurements;
+  /** Increment this to programmatically reset the form to initialValues. */
+  resetKey?: number;
   onChange: (values: ProductMeasurements) => void;
 }
 
 export const MeasurementForm: React.FC<MeasurementFormProps> = ({
   initialValues = DEFAULT_PANTS_MEASUREMENTS,
+  resetKey = 0,
   onChange,
 }) => {
   const {
@@ -31,10 +34,13 @@ export const MeasurementForm: React.FC<MeasurementFormProps> = ({
     mode: 'onChange',
   });
 
-  // Sync RHF state when parent resets initialValues
+  // Only reset when the parent explicitly signals a reset (resetKey increments).
+  // Do NOT depend on initialValues directly — that creates a feedback loop because
+  // the watch subscription calls onChange → parent setState → new initialValues ref → reset → watch fires → ...
   useEffect(() => {
     reset(initialValues);
-  }, [initialValues, reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetKey]);
 
   // Subscribe to field changes via RHF event-based listener (no cascading renders)
   useEffect(() => {
